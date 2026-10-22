@@ -1,0 +1,14 @@
+{
+  "name": "campus-trade",
+  "version": "0.1.0",
+  "description": "Campus marketplace: seller UI, consumer UI and a shared server on separate localhost ports.",
+  "private": true,
+  "engines": { "node": ">=18" },
+  "scripts": {
+    "start": "node start-all.js",
+    "server": "node server/server.js",
+    "seller": "node seller/server.js",
+    "consumer": "node consumer/server.js",
+    "test": "node test/smoke.js"
+  }
+}
