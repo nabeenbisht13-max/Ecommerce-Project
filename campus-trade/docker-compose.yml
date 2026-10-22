@@ -1,0 +1,60 @@
+# One image, five containers: the server, seller, and three independent buyer interfaces.
+services:
+  server:
+    build: .
+    command: ["node", "server/server.js"]
+    environment:
+      - SERVER_PORT=3000
+      - CORS_ORIGIN=${CORS_ORIGIN:-*}
+      - DATA_FILE=/app/data/db.json
+    ports: ["3000:3000"]
+    volumes: ["trade-data:/app/data"]
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/health"]
+      interval: 15s
+      timeout: 3s
+      retries: 3
+    restart: unless-stopped
+
+  seller:
+    build: .
+    command: ["node", "seller/server.js"]
+    environment:
+      - SELLER_PORT=3001
+      - SERVER_PORT=3000
+    ports: ["3001:3001"]
+    depends_on: [server]
+    restart: unless-stopped
+
+  consumer:
+    build: .
+    command: ["node", "consumer/server.js"]
+    environment:
+      - CONSUMER_PORT=3002
+      - SERVER_PORT=3000
+    ports: ["3002:3002"]
+    depends_on: [server]
+    restart: unless-stopped
+
+  consumer2:
+    build: .
+    command: ["node", "consumer/server.js"]
+    environment:
+      - CONSUMER_PORT=3003
+      - SERVER_PORT=3000
+    ports: ["3003:3003"]
+    depends_on: [server]
+    restart: unless-stopped
+
+  consumer3:
+    build: .
+    command: ["node", "consumer/server.js"]
+    environment:
+      - CONSUMER_PORT=3004
+      - SERVER_PORT=3000
+    ports: ["3004:3004"]
+    depends_on: [server]
+    restart: unless-stopped
+
+volumes:
+  trade-data:
